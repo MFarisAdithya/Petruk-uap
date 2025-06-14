@@ -62,6 +62,54 @@ void clears() {
     system("cls");
 }
 
+void edits(list<Project> &projectList, const string &targetName) {
+    for (auto &p : projectList) {
+        if (targetName == p.name) {
+            cout << "Waktu: ";
+            cin >> p.time;
+            cout << "Bayaran: ";
+            cin >> p.payment;
+            p.calculate();
+            cout << "Proyek berhasil diupdate.\n";
+            return;
+        }
+    }
+    cout << "Proyek tidak ada.\n";
+}
+
+void deletes(list<Project> &projectList, const string &targetName) {
+    for (auto it = projectList.begin(); it != projectList.end(); ++it) {
+        if (targetName == it->name) {
+            projectList.erase(it);
+            cout << "Proyek berhasil dihapus.\n";
+            return;
+        }
+    }
+    cout << "Proyek tidak ada.\n";
+}
+
+void searchs(const list<Project> &projectList) {
+    while (true) {
+        string targetName;
+        cout << "Masukkan nama proyek yang dicari: ";
+        getline(cin, targetName);
+
+        if (targetName.empty()) {
+            cout << "Pencarian dibatalkan.\n";
+            return;
+        }
+
+        for (const auto &p : projectList) {
+            if (targetName == p.name) {
+                cout << "Ditemukan: " << p.name << " - " << p.time << " jam, Rp" << (int)p.payment << endl;
+                return;
+            }
+        }
+
+        cout << "Proyek tidak ditemukan. Coba lagi.\n";
+    }
+}
+
 int main() {
     cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
     cout << "                                                    	Selamat datang, wahai pejuang freelance!\n";
@@ -147,10 +195,17 @@ int main() {
                 }
                 break;
             case 2:
+		cout << "Masukkan nama proyek yang ingin diedit: ";
+                getline(cin, name);
+                edits(projectList, name);
                 break;
             case 3:
+		cout << "Masukkan nama proyek yang ingin dihapus: ";
+                getline(cin, name);
+                deletes(projectList, name);
                 break;
             case 4:
+		searchs(projectList);
                 break;
             case 5:
                 break;

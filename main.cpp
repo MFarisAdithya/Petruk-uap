@@ -20,6 +20,40 @@ struct Project {
     }
 };
 
+void input(Project &p) {
+    cout << "Nama proyek: ";
+    cin.ignore();
+    cin.getline(p.name, 100);
+    cout << "Waktu pengerjaan (jam): ";
+    cin >> p.time;
+    cout << "Bayaran (Rp): ";
+    cin >> p.payment;
+    p.calculate();
+}
+
+bool compare(const Project &a, const Project &b) {
+    return a.ratio > b.ratio;
+}
+
+void rekomen(const list<Project> &projectList, double totalTime) {
+    vector<Project> sortedProjects(projectList.begin(), projectList.end());
+    sort(sortedProjects.begin(), sortedProjects.end(), compare);
+
+    double usedTime = 0;
+ 	long double totalPayment = 0;
+
+    cout << "\nRekomendasi Proyek Freelance:\n";
+    for (const auto &p : sortedProjects) {
+        if (usedTime + p.time <= totalTime) {
+            cout << "- " << p.name << " (" << p.time << " jam, Rp" << (int)p.payment << ")\n";
+            usedTime += p.time;
+            totalPayment += p.payment;
+        }
+    }
+
+    cout << "\nTotal waktu yang digunakan: " << usedTime << " jam dari " << totalTime << " jam\n";
+    cout << "Total bayaran: Rp" << (int)totalPayment << endl;
+}
 
 void clears() {
     cout << "\nEnter untuk lanjut";
@@ -27,7 +61,6 @@ void clears() {
     cin.get();
     system("cls");
 }
-
 
 int main() {
     cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
@@ -60,6 +93,17 @@ int main() {
     stack<string> undoHistory;
     queue<Project> projectQueue;
 
+    for (int i = 0; i < n; i++) {
+        cout << "\nProyek ke-" << i + 1 << endl;
+        input(projects[i]);
+
+        projectList.push_back(projects[i]);
+        projectQueue.push(projects[i]);
+        undoHistory.push(projects[i].name);
+
+        cout << "Proyek '" << projects[i].name << "' disimpan.\n";
+    }
+	
     double totalTime;
     while (true) {
         cout << "\nMasukkan batas maksimal jam kerja per minggu: ";
@@ -73,7 +117,8 @@ int main() {
             break;
         }
     }
-
+	
+    rekomen(projectList, totalTime);
     int choice;
     do {
     	clears();
@@ -112,6 +157,7 @@ int main() {
             case 6:
                 break;
             case 7:
+		rekomen(projectList, totalTime);
                 break;
             case 8:
                 break;
@@ -129,8 +175,8 @@ int main() {
             case 0:
                 cout << "Keluar dari menu daftar proyek.\n";
                   break;
-          }
-      } while (choice != 0);
+	}
+    } while (choice != 0);
 
     return 0;
 }

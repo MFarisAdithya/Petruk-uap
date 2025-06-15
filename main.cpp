@@ -258,7 +258,6 @@ int main() {
     		filters(projectList, maxTime);
     		break;
             case 6:
-                case 6:
 	    	adds(projectList, projectQueue, undoHistory);
     		break;
             case 7:

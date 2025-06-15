@@ -110,6 +110,51 @@ void searchs(const list<Project> &projectList) {
     }
 }
 
+void adds(list<Project> &projectList, queue<Project> &projectQueue, stack<string> &undoHistory) {
+    Project newProject;
+    cin.ignore();
+    cout << "Nama proyek: ";
+    cin.getline(newProject.name, 100);
+    cout << "Waktu pengerjaan (jam): ";
+    cin >> newProject.time;
+    cout << "Bayaran (Rp): ";
+    cin >> newProject.payment;
+    newProject.calculate();
+
+    projectList.push_back(newProject);
+    projectQueue.push(newProject);
+    undoHistory.push(newProject.name);
+
+    cout << "Proyek '" << newProject.name << "' berhasil ditambahkan.\n";
+}
+
+void filters(const list<Project> &projectList, double maxTime) {
+    cout << "\nProyek dengan waktu <= " << maxTime << " jam:\n";
+    for (const auto &p : projectList) {
+        if (p.time <= maxTime) {
+            cout << "- " << p.name << " (" << p.time << " jam, Rp" << (int)p.payment << ")\n";
+        }
+    }
+}
+
+void undos(list<Project> &projectList, stack<string> &undoHistory) {
+    if (undoHistory.empty()) {
+        cout << "Tidak ada proyek untuk dibatalkan.\n";
+        return;
+    }
+    string lastAdded = undoHistory.top();
+    undoHistory.pop();
+
+    for (auto it = projectList.begin(); it != projectList.end(); ++it) {
+        if (lastAdded == it->name) {
+            projectList.erase(it);
+            cout << "Undo berhasil: Proyek '" << lastAdded << "' dihapus.\n";
+            return;
+        }
+    }
+    cout << "Proyek '" << lastAdded << "' tidak ditemukan di daftar.\n";
+}
+
 int main() {
     cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
     cout << "                                                    	Selamat datang, wahai pejuang freelance!\n";
@@ -208,25 +253,31 @@ int main() {
 		searchs(projectList);
                 break;
             case 5:
-                break;
+    		cout << "Masukkan batas waktu (jam): ";
+    		cin >> maxTime;
+    		filters(projectList, maxTime);
+    		break;
             case 6:
-                break;
+                case 6:
+	    	adds(projectList, projectQueue, undoHistory);
+    		break;
             case 7:
 		rekomen(projectList, totalTime);
                 break;
             case 8:
-                break;
-      			case 9:
-      			    cout << "Masukkan batas maksimal jam kerja yang baru: ";
-      			    cin >> totalTime;
-      			    if (cin.fail() || totalTime <= 0) {
-      			        cin.clear();
-      			        cin.ignore(10000, '\n');
-      			        cout << "Input tidak valid, waktu tidak dapat diubah.\n";
-      			    } else {
-      			        cout << "Batas waktu diubah menjadi " << totalTime << " jam.\n";
-      			    }
-      			    break;          
+                 undos(projectList, undoHistory);
+    		break;
+      	    case 9:
+      		cout << "Masukkan batas maksimal jam kerja yang baru: ";
+      		cin >> totalTime;
+      		if (cin.fail() || totalTime <= 0) {
+      			cin.clear();
+      			cin.ignore(10000, '\n');
+      			cout << "Input tidak valid, waktu tidak dapat diubah.\n";
+      		} else {
+      			cout << "Batas waktu diubah menjadi " << totalTime << " jam.\n";
+      			}
+      			break;          
             case 0:
                 cout << "Keluar dari menu daftar proyek.\n";
                   break;

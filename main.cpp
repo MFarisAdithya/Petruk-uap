@@ -40,7 +40,7 @@ void rekomen(const list<Project> &projectList, double totalTime) {
     sort(sortedProjects.begin(), sortedProjects.end(), compare);
 
     double usedTime = 0;
- 	long double totalPayment = 0;
+    long double totalPayment = 0;
 
     cout << "\nRekomendasi Proyek Freelance:\n";
     for (const auto &p : sortedProjects) {
